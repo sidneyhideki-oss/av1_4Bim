@@ -12,51 +12,45 @@
       crossorigin="anonymous"
     />
 
-    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-md bg-body-tertiary">
       <div class="container">
-        <a class="navbar-brand" href="index.html"> TechFix </a>
+        <a class="navbar-brand" href="index.html">Marketon</a>
 
         <div class="navbar-nav">
-          <a class="nav-link" href="index.html">Início</a>
-            <a class="nav-link" href="formulario.html">Serviços online</a>
-  </div>
+          <a class="nav-link" href="index.html">Cadastro</a>
+          <a class="nav-link active" aria-current="page" href="formulario.html">Serviços online</a>
+        </div>
       </div>
     </nav>
     <main class="container mt-5">
       <h1 id="titulo">Serviços online</h1>
+      <p>Ao enviar, seu aplicativo de e-mail será aberto com a solicitação preenchida. Você precisará confirmar o envio por lá.</p>
       <form id="formulario">
         <div class="mb-3">
-          <label for="nome" class="form-label"> Nome: </label>
-          <input type="text" id="nome" class="form-control" />
+          <label for="nome" class="form-label">Nome do cliente</label>
+          <input type="text" id="nome" name="nome" class="form-control" required />
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label"> Email: </label>
-          <input type="email" id="email" class="form-control" />
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" id="email" name="email" class="form-control" required />
         </div>
-       <form id="formulario" novalidate>
-                <div class="mb-3">
-                  <label for="nome" class="form-label"> Nome do cliente </label>
-                  <input type="text" id="nome" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                  <label for="servico" class="form-label"> Serviço </label>
-                  <select id="servico" class="form-select">
-                    <option value="120">Selecione um Serviço</option>
-                    
-                  </select>
-                </div>
+        <div class="mb-3">
+          <label for="servico" class="form-label">Serviço</label>
+          <select id="servico" name="servico" class="form-select" required>
+            <option value="">Selecione um serviço</option>
+          </select>
+        </div>
         <button type="submit" class="btn btn-primary">Enviar</button>
       </form>
+      <p id="resultado" class="alert alert-success d-none mt-3" role="status" aria-live="polite"></p>
     </main>
             <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"
     ></script>
-    <script src="js/script.js"></script>
+    <script src="../js/formulario.js"></script>
   </body>
 </html>

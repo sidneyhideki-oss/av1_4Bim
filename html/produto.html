@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cadastro de Produtos - TechFix</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- MENU -->
+  <nav class="navbar navbar-expand-md bg-body-tertiary">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">TechFix</a>
+
+      <div class="navbar-nav">
+        <a class="nav-link" href="index.html">Início</a>
+        <a class="nav-link" href="orcamento.html">Orçamento</a>
+        <a class="nav-link active" href="produtos.html">Produtos</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+
+    <h1 class="mb-4">Cadastro de Produtos</h1>
+
+    <div class="row g-4">
+
+      <!-- FORMULÁRIO -->
+      <div class="col-12 col-lg-5">
+
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+
+            <h2 class="h4 mb-4">Novo produto</h2>
+
+            <form id="formulario">
+
+              <!-- NOME -->
+              <div class="mb-3">
+                <label for="nome" class="form-label">
+                  Nome do produto
+                </label>
+
+                <input
+                  type="text"
+                  id="nome"
+                  class="form-control"
+                  required
+                >
+              </div>
+
+              <!-- PREÇO -->
+              <div class="mb-3">
+                <label for="preco" class="form-label">
+                  Preço
+                </label>
+
+                <input
+                  type="number"
+                  id="preco"
+                  class="form-control"
+                  min="0.01"
+                  step="0.01"
+                  required
+                >
+              </div>
+
+              <!-- FOTOGRAFIA -->
+              <div class="mb-3">
+                <label for="foto" class="form-label">
+                  Fotografia do produto
+                </label>
+
+                <input
+                  type="file"
+                  id="foto"
+                  class="form-control"
+                  accept="image/png,image/jpeg,image/webp"
+                  required
+                >
+
+                <div class="form-text">
+                  Selecione uma imagem de até 500 KB.
+                </div>
+              </div>
+
+              <!-- PRÉ-VISUALIZAÇÃO -->
+              <div class="mb-3 text-center">
+                <img
+                  id="previa"
+                  class="img-fluid rounded d-none"
+                  style="max-height: 200px"
+                  alt="Pré-visualização do produto"
+                >
+              </div>
+
+              <!-- BOTÃO -->
+              <button type="submit" class="btn btn-primary w-100">
+                Cadastrar produto
+              </button>
+
+            </form>
+
+            <!-- MENSAGEM -->
+            <div
+              id="mensagem"
+              class="alert d-none mt-3"
+              role="alert"
+            ></div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PRODUTOS CADASTRADOS -->
+      <div class="col-12 col-lg-7">
+
+        <h2 class="h4 mb-3">Produtos cadastrados</h2>
+
+        <div id="lista-produtos" class="row g-3">
+          <!-- Os cards serão criados pelo JavaScript -->
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="js/produtos.js"></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+  ></script>
+
+</body>
+</html>

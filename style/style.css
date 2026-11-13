@@ -134,6 +134,7 @@ h1 { margin-bottom: .8rem; font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800
   font-size: .9rem;
 }
 .feature-note strong { color: var(--ink); }
+.catalog-empty { grid-column: 1 / -1; }
 
 .alert { padding: .9rem 1rem; border: 1px solid transparent; border-radius: 12px; }
 .alert-success { border-color: #b7dfc5; background: #eaf6ee; color: #155c39; }
@@ -149,8 +150,8 @@ h1 { margin-bottom: .8rem; font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800
 }
 
 @media (min-width: 576px) {
-  .col-md-4 { grid-column: span 4; }
-  .col-md-6 { grid-column: span 6; }
-  .col-md-8 { grid-column: span 8; }
+  .col-md-4 { grid-column: span 4; width: auto; }
+  .col-md-6 { grid-column: span 6; width: auto; }
+  .col-md-8 { grid-column: span 8; width: auto; }
   .flex-sm-row { flex-direction: row; }
 }

@@ -1,201 +1,201 @@
-const formulario = document.getElementById("formulario");
-
-const inputNome = document.getElementById("nome");
-const inputPreco = document.getElementById("preco");
-const inputFoto = document.getElementById("foto");
-const imgPrevia = document.getElementById("previa");
-
-const listaProdutos = document.getElementById("lista-produtos");
-const mensagem = document.getElementById("mensagem");
+const formulario = document.querySelector("#formulario");
+const inputNome = document.querySelector("#nome");
+const inputPreco = document.querySelector("#preco");
+const inputFoto = document.querySelector("#foto");
+const previa = document.querySelector("#previa");
+const buscaProdutos = document.querySelector("#busca-produtos");
+const listaProdutos = document.querySelector("#lista-produtos");
+const totalProdutos = document.querySelector("#total-produtos");
+const mensagem = document.querySelector("#mensagem");
+const CHAVE_PRODUTOS = "produtos";
+const TAMANHO_MAXIMO_IMAGEM = 500 * 1024;
+const TIPOS_IMAGEM_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
 
 let fotoBase64 = "";
+let produtos = carregarProdutos();
 
-let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+function carregarProdutos() {
+  try {
+    const dadosSalvos = JSON.parse(localStorage.getItem(CHAVE_PRODUTOS) || "[]");
+    if (!Array.isArray(dadosSalvos)) return [];
 
-inputFoto.addEventListener("change", (evento) => {
-  const arquivo = evento.target.files[0]; 
+    return dadosSalvos
+      .filter((produto) =>
+        produto &&
+        typeof produto.nome === "string" &&
+        typeof produto.foto === "string" &&
+        Number.isFinite(Number(produto.preco)),
+      )
+      .map((produto, indice) => ({
+        ...produto,
+        id: produto.id || `produto-legado-${indice}`,
+        preco: Number(produto.preco),
+      }));
+  } catch {
+    return [];
+  }
+}
 
-  if (!arquivo) {
+function formatarMoeda(valor) {
+  return Number(valor).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
+
+function mostrarMensagem(texto, tipo = "success") {
+  mensagem.textContent = texto;
+  mensagem.className = `alert alert-${tipo} mt-3 mb-0`;
+}
+
+function salvarProdutos(novosProdutos) {
+  try {
+    localStorage.setItem(CHAVE_PRODUTOS, JSON.stringify(novosProdutos));
+    produtos = novosProdutos;
+    return true;
+  } catch {
+    mostrarMensagem(
+      "Não foi possível salvar. Remova algumas imagens ou escolha arquivos menores.",
+      "danger",
+    );
+    return false;
+  }
+}
+
+function criarCardProduto(produto) {
+  const coluna = document.createElement("div");
+  coluna.className = "col-12";
+
+  const card = document.createElement("article");
+  card.className = "content-card h-100";
+
+  const imagem = document.createElement("img");
+  imagem.src = produto.foto;
+  imagem.alt = `Foto de ${produto.nome}`;
+  imagem.className = "img-fluid w-100";
+  imagem.style.height = "180px";
+  imagem.style.objectFit = "cover";
+
+  const corpo = document.createElement("div");
+  corpo.className = "card-body d-flex flex-column";
+
+  const nome = document.createElement("h3");
+  nome.className = "h5";
+  nome.textContent = produto.nome;
+
+  const preco = document.createElement("p");
+  preco.className = "summary-value mb-3";
+  preco.textContent = formatarMoeda(produto.preco);
+
+  const remover = document.createElement("button");
+  remover.type = "button";
+  remover.className = "btn-outline-danger mt-auto";
+  remover.textContent = "Remover produto";
+  remover.setAttribute("aria-label", `Remover ${produto.nome} do catálogo`);
+  remover.addEventListener("click", () => removerProduto(produto.id));
+
+  corpo.append(nome, preco, remover);
+  card.append(imagem, corpo);
+  coluna.append(card);
+  return coluna;
+}
+
+function mostrarProdutos() {
+  const termo = buscaProdutos.value.trim().toLocaleLowerCase("pt-BR");
+  const produtosFiltrados = produtos.filter((produto) =>
+    produto.nome.toLocaleLowerCase("pt-BR").includes(termo),
+  );
+
+  listaProdutos.replaceChildren();
+  totalProdutos.textContent = `${produtos.length} ${produtos.length === 1 ? "produto cadastrado" : "produtos cadastrados"}`;
+
+  if (produtosFiltrados.length === 0) {
+    const vazio = document.createElement("p");
+    vazio.className = "form-text mb-0 catalog-empty";
+    vazio.textContent = produtos.length
+      ? "Nenhum produto encontrado para essa pesquisa."
+      : "Nenhum produto cadastrado. Adicione o primeiro ao catálogo.";
+    listaProdutos.append(vazio);
     return;
   }
 
-  const tiposPermitidos =[ "image/jpeg", "image/png", "image/gif"];
+  for (const produto of produtosFiltrados) {
+    listaProdutos.append(criarCardProduto(produto));
+  }
+}
 
-  if (!tiposPermitidos.includes(arquivo.type)) {
-    alert("Tipo de arquivo não permitido. Selecione uma imagem JPEG, PNG ou GIF.");
-    inputFoto.value = "";
-    fotoBase64 = "";
-    imgPrevia.classList.add("d-none");
+function removerProduto(id) {
+  const produto = produtos.find((item) => item.id === id);
+  if (!produto || !window.confirm(`Remover “${produto.nome}” do catálogo?`)) {
     return;
   }
 
-  if (arquivo.size > 500 * 1024) {
-    alert("Arquivo muito grande. Selecione uma imagem menor que 500 KB.");
+  if (salvarProdutos(produtos.filter((item) => item.id !== id))) {
+    mostrarProdutos();
+    mostrarMensagem(`Produto “${produto.nome}” removido do catálogo.`);
+  }
+}
+
+inputFoto.addEventListener("change", () => {
+  const arquivo = inputFoto.files[0];
+  fotoBase64 = "";
+  previa.removeAttribute("src");
+  previa.classList.add("d-none");
+
+  if (!arquivo) return;
+
+  if (!TIPOS_IMAGEM_PERMITIDOS.includes(arquivo.type)) {
+    mostrarMensagem("Selecione uma imagem JPEG, PNG ou WEBP.", "danger");
     inputFoto.value = "";
-    fotoBase64 = "";
-    imgPrevia.classList.add("d-none");
+    return;
+  }
+
+  if (arquivo.size > TAMANHO_MAXIMO_IMAGEM) {
+    mostrarMensagem("A imagem deve ter no máximo 500 KB.", "danger");
+    inputFoto.value = "";
     return;
   }
 
   const leitor = new FileReader();
-  leitor.onload = () => {
+  leitor.addEventListener("load", () => {
     fotoBase64 = leitor.result;
-    imgPrevia.src = fotoBase64;
-    imgPrevia.classList.remove("d-none");
-  };
+    previa.src = fotoBase64;
+    previa.classList.remove("d-none");
+  });
+  leitor.addEventListener("error", () => {
+    mostrarMensagem("Não foi possível carregar essa imagem. Tente outro arquivo.", "danger");
+    inputFoto.value = "";
+  });
   leitor.readAsDataURL(arquivo);
+});
 
-  formulario.addEventListener("submit", function (event) {
+formulario.addEventListener("submit", (evento) => {
+  evento.preventDefault();
 
-  event.preventDefault();
-
-  // Recupera os dados do formulário
   const nome = inputNome.value.trim();
   const preco = Number(inputPreco.value);
 
-  // Validação
-  if (nome === "" || preco <= 0 || fotoBase64 === "") {
-    mostrarMensagem(
-      "Preencha todos os campos corretamente!",
-      "warning"
-    );
-
+  if (!nome || !Number.isFinite(preco) || preco <= 0 || !fotoBase64) {
+    mostrarMensagem("Informe um nome, um preço válido e selecione uma imagem.", "danger");
     return;
   }
 
-  // Cria o objeto produto
- const produto = {
-    nome: nome,
-    preco: preco,
+  const produto = {
+    id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    nome,
+    preco,
     foto: fotoBase64,
   };
 
-  // Adiciona o produto ao array
-const novoProduto = [...produtos, produto];
+  if (!salvarProdutos([...produtos, produto])) return;
 
-  // Salva o array no navegador
- try {
-    localStorage.setItem("produtos", JSON.stringify(novoProduto));
-  } catch (error) {
-    mostrarMensagem(
-      "Não foi possível salvar o produto neste navegador.",
-      "danger"
-    );
-    return;
-  }
-produtos = novoProduto;
-  // Limpa o formulário
   formulario.reset();
-
   fotoBase64 = "";
-
-  imgPrevia.src = "";
-  imgPrevia.classList.add("d-none");
-
-  // Exibe mensagem de sucesso
-  mostrarMensagem(
-    "Produto cadastrado com sucesso!",
-    "success"
-  );
-
-  // Atualiza a lista de produtos
+  previa.removeAttribute("src");
+  previa.classList.add("d-none");
   mostrarProdutos();
-
-});
-}); 
-/* =====================================
-ETAPA 5 - EXIBIR PRODUTOS
-===================================== */
-
-function mostrarProdutos() {
-
-// Limpa a lista antes de reconstruí-la
-listaProdutos.innerHTML = "";
-
-// Verifica se existem produtos
-if (produtos.length === 0) {
-
-listaProdutos.innerHTML =
-"<p class='text-secondary'>Nenhum produto cadastrado.</p>";
-
-return;
-}
-
-// Percorre o array
-produtos.forEach(function (produto) {
-
-// Cria a coluna Bootstrap
-const coluna = document.createElement("div");
-
-coluna.className = "col-12 col-md-6";
-
-// Cria o card
-const card = document.createElement("div");
-
-card.className = "card h-100 shadow-sm";
-
-// Cria a imagem
-const imagem = document.createElement("img");
-
-imagem.src = produto.foto;
-imagem.alt = "Foto de " + produto.nome;
-
-imagem.className = "card-img-top";
-
-imagem.style.height = "180px";
-imagem.style.objectFit = "cover";
-
-// Cria o corpo do card
-const corpo = document.createElement("div");
-
-corpo.className = "card-body";
-
-// Cria o título
-const titulo = document.createElement("h5");
-
-titulo.className = "card-title";
-titulo.textContent = produto.nome;
-
-// Cria o preço
-const preco = document.createElement("p");
-
-preco.className = "card-text";
-
-preco.textContent =
-"R$ " + produto.preco.toFixed(2);
-
-// Monta o card
-corpo.appendChild(titulo);
-corpo.appendChild(preco);
-
-card.appendChild(imagem);
-card.appendChild(corpo);
-
-coluna.appendChild(card);
-
-// Adiciona o card à página
-listaProdutos.appendChild(coluna);
-
+  mostrarMensagem(`“${nome}” foi adicionado ao catálogo.`);
 });
 
-}
-
-/* =====================================
-ETAPA 6 - EXIBIR MENSAGENS
-===================================== */
-
-function mostrarMensagem(texto, tipo) {
-
-mensagem.textContent = texto;
-
-mensagem.className =
-"alert alert-" + tipo + " mt-3";
-
-}
-
-/* =====================================
-ETAPA 7 - CARREGAMENTO INICIAL
-===================================== */
-
-// Exibe os produtos recuperados do navegador
+buscaProdutos.addEventListener("input", mostrarProdutos);
 mostrarProdutos();

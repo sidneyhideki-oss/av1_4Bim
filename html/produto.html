@@ -1,148 +1,83 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#176b4d" />
+    <meta name="description" content="Cadastre, pesquise e organize os produtos da Marketon." />
+    <title>Produtos | Marketon</title>
 
-  <title>Cadastro de Produtos - TechFix</title>
-
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-
-  <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-
-  <!-- MENU -->
-  <nav class="navbar navbar-expand-md bg-body-tertiary">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">TechFix</a>
-
-      <div class="navbar-nav">
-        <a class="nav-link" href="index.html">Início</a>
-        <a class="nav-link" href="orcamento.html">Orçamento</a>
-        <a class="nav-link active" href="produtos.html">Produtos</a>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../style/style.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md bg-body-tertiary">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Marketon</a>
+        <div class="navbar-nav">
+          <a class="nav-link" href="index.html">Cadastro</a>
+          <a class="nav-link" href="formulario.html">Serviços online</a>
+          <a class="nav-link active" href="produto.html" aria-current="page">Produtos</a>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <main class="container py-5">
+    <main class="container">
+      <header class="page-intro">
+        <span class="eyebrow">Catálogo Marketon</span>
+        <h1 id="titulo">Seus produtos,<br />sempre organizados.</h1>
+        <p>Cadastre produtos com foto, pesquise no catálogo e mantenha os dados salvos neste navegador.</p>
+      </header>
 
-    <h1 class="mb-4">Cadastro de Produtos</h1>
-
-    <div class="row g-4">
-
-      <!-- FORMULÁRIO -->
-      <div class="col-12 col-lg-5">
-
-        <div class="card shadow-sm">
-          <div class="card-body p-4">
-
-            <h2 class="h4 mb-4">Novo produto</h2>
-
-            <form id="formulario">
-
-              <!-- NOME -->
-              <div class="mb-3">
-                <label for="nome" class="form-label">
-                  Nome do produto
-                </label>
-
-                <input
-                  type="text"
-                  id="nome"
-                  class="form-control"
-                  required
-                >
-              </div>
-
-              <!-- PREÇO -->
-              <div class="mb-3">
-                <label for="preco" class="form-label">
-                  Preço
-                </label>
-
-                <input
-                  type="number"
-                  id="preco"
-                  class="form-control"
-                  min="0.01"
-                  step="0.01"
-                  required
-                >
-              </div>
-
-              <!-- FOTOGRAFIA -->
-              <div class="mb-3">
-                <label for="foto" class="form-label">
-                  Fotografia do produto
-                </label>
-
-                <input
-                  type="file"
-                  id="foto"
-                  class="form-control"
-                  accept="image/png,image/jpeg,image/webp"
-                  required
-                >
-
-                <div class="form-text">
-                  Selecione uma imagem de até 500 KB.
+      <div class="row g-4">
+        <section class="col-12 col-md-6" aria-labelledby="titulo-cadastro">
+          <div class="content-card h-100">
+            <div class="card-body">
+              <h2 id="titulo-cadastro" class="h4 mb-4">Cadastrar produto</h2>
+              <form id="formulario">
+                <div class="mb-3">
+                  <label for="nome" class="form-label">Nome do produto</label>
+                  <input type="text" id="nome" name="nome" class="form-control" maxlength="80" placeholder="Ex.: Teclado sem fio" required />
                 </div>
-              </div>
-
-              <!-- PRÉ-VISUALIZAÇÃO -->
-              <div class="mb-3 text-center">
-                <img
-                  id="previa"
-                  class="img-fluid rounded d-none"
-                  style="max-height: 200px"
-                  alt="Pré-visualização do produto"
-                >
-              </div>
-
-              <!-- BOTÃO -->
-              <button type="submit" class="btn btn-primary w-100">
-                Cadastrar produto
-              </button>
-
-            </form>
-
-            <!-- MENSAGEM -->
-            <div
-              id="mensagem"
-              class="alert d-none mt-3"
-              role="alert"
-            ></div>
-
+                <div class="mb-3">
+                  <label for="preco" class="form-label">Preço</label>
+                  <input type="number" id="preco" name="preco" class="form-control" min="0.01" step="0.01" placeholder="0,00" required />
+                </div>
+                <div class="mb-3">
+                  <label for="foto" class="form-label">Foto do produto</label>
+                  <input type="file" id="foto" name="foto" class="form-control" accept="image/jpeg,image/png,image/webp" required />
+                  <div class="form-text">Formatos JPEG, PNG ou WEBP; tamanho máximo de 500 KB.</div>
+                </div>
+                <div class="mb-3 text-center">
+                  <img id="previa" class="img-fluid rounded d-none" style="max-height: 200px" alt="Pré-visualização do produto" />
+                </div>
+                <button type="submit" class="btn btn-primary px-4">Adicionar ao catálogo</button>
+              </form>
+              <p id="mensagem" class="alert d-none mt-3 mb-0" role="status" aria-live="polite"></p>
+              <div class="feature-note"><span aria-hidden="true">💾</span><span><strong>Salvo neste navegador.</strong> Seus produtos ficam disponíveis quando voltar a esta página.</span></div>
+            </div>
           </div>
-        </div>
+        </section>
 
+        <section class="col-12 col-md-6" aria-labelledby="titulo-produtos">
+          <div class="content-card h-100">
+            <div class="card-body">
+              <h2 id="titulo-produtos" class="h4 mb-3">Produtos cadastrados</h2>
+              <label for="busca-produtos" class="form-label">Pesquisar no catálogo</label>
+              <input type="search" id="busca-produtos" class="form-control mb-3" placeholder="Digite o nome do produto" />
+              <p id="total-produtos" class="form-text" aria-live="polite"></p>
+              <div id="lista-produtos" class="row g-3"></div>
+            </div>
+          </div>
+        </section>
       </div>
+    </main>
 
-      <!-- PRODUTOS CADASTRADOS -->
-      <div class="col-12 col-lg-7">
-
-        <h2 class="h4 mb-3">Produtos cadastrados</h2>
-
-        <div id="lista-produtos" class="row g-3">
-          <!-- Os cards serão criados pelo JavaScript -->
-        </div>
-
-      </div>
-
-    </div>
-
-  </main>
-
-  <script src="js/produtos.js"></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-  ></script>
-
-</body>
+    <script src="../js/produto.js"></script>
+  </body>
 </html>
